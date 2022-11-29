@@ -15,7 +15,7 @@ Separate 80% training set, 10% evaluation (used to impose the condition that end
 
 -----------------------------------------------------------------------------------------------
 
-2. RUN GALFORM
+3. RUN GALFORM
 
 Run these 1000 models taking advantage of parallelization tools:
 - run_galform_em.csh: there is a wide variety of different models and simulations defined, as well as the output properties you can choose. Flags: set only "galform" (to run galform) and "elliott" (to produce the desired output) to true, while "models_dir" to indicate the output path and "./delete_variable.csh $galform_inputs_file aquarius_particle_file" in case there are no particle files. It generates the same number of subvolumes as the input Dhalos merger trees are distributed in. The difference respect to "run_galform.csh" is that Galform uses the model "gp19.vimal.em.project" in which each Galform run has a different set of free parameters (those we are going to study their variation), so the input free parameters take the value of the corresponding Latin Hypercube position and each model itself is stored in a different directory whose name indicate the parameter values.
@@ -28,15 +28,15 @@ The same steps would be done in case the SHARK semi-analytic model was employed.
 ----------------------------------------------------------------------------------------------------------------------------------------------
 
 
-3. GENERATE CALIBRATION PLOTS DATA
+4. GENERATE CALIBRATION PLOTS DATA
 
 Once the training models have been run, you have to generate the arrays (bins + observable functions values) for the 1000 runs. I have to extend the "calibration.py" code to be used over the 1000 models and save all the generated data.
-- calibration_em.py: save the bins and the values of the observable functions (data to be used by the emulator) for the 1000 models.
+- #calibration_em.py: save the bins and the values of the observable functions (data to be used by the emulator) for the 1000 models.
 
 ---------------------------------------------------------------------------------------------------
 
 
-4. EMULATOR
+5. EMULATOR
 
 - hypercube_shuffle.py: once the SAM has been run over the 1000 models in case the sampling of the training, evaluation or test set doesn't seem to be adequate visually, shuffle the free parameters and the output from the observables.
 
@@ -46,5 +46,5 @@ TensorFlow codes in Jupiter notebook.
 - hypercube_10000models.py: once the emulator is trained, span the whole parameter space through 10000 points in a MHL again make use of the emulator.
 - emulator_elliott-POST.ipynb: once the emulator trained, it generates the predictions of the observable functions to study the whole parameter space. Compute the chi square compared to the different observational data employed and it finds the set of free parameters most consistent to observations (best fit with the lowest chi square). Run the best fit with the SAM itself and compare both results. Some parts haven't been extrapolated to the current project yet.
 
-- emulator_elliott-K-FOLD.ipynb: k-fold technique applied. Still not implemented.
+- #emulator_elliott-K-FOLD.ipynb: k-fold technique applied. Still not implemented.
 
