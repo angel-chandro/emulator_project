@@ -46,5 +46,5 @@ TensorFlow codes in Jupiter notebook.
 - hypercube_10000models.py: once the emulator is trained, span the whole parameter space through 10000 points in a MHL again make use of the emulator.
 - #emulator_elliott-POST.ipynb: once the emulator trained, it generates the predictions of the observable functions to study the whole parameter space. Compute the chi square compared to the different observational data employed and it finds the set of free parameters most consistent to observations (best fit with the lowest chi square). Run the best fit with the SAM itself and compare both results. Some parts haven't been extrapolated to the current project yet.
 
-- #emulator_elliott-K-FOLD.ipynb: k-fold technique applied. Still not implemented.
+- #emulator_elliott-SAVE-kfold.ipynb: k-fold technique applied. Still not implemented.
 
