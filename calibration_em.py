@@ -15,6 +15,7 @@ from matplotlib import pyplot as plt
 # code to produce calibration plots in Elliot et al. paper
 # (only 1 SAM run divided into 64 subvolumes)
 # for all the models used in emulator training
+# the runs are ordered in the same way as the input free parameters file
 
 def percentiles(val,data,weights=None):
     """
@@ -50,10 +51,9 @@ def percentiles(val,data,weights=None):
 path = '/home/chandro/Galform_Out/simulations/' 
 model = '/elliott/UNIT200/gp19.vimal.em.tfm/test/' # path to emulator models
 nmodels = 1000
-models = np.linspace(0,999,1000)
-indir = path+model
+input_file = "/home/chandro/emulator_project/hypercupe_10p_1000.dat"
 nvol = 64
-end = '_UNIT100'
+end = '_UNIT'
 z = 0
 z1 = 1.1
 outpath = '/home/chandro/galform/elliott/'
@@ -160,18 +160,36 @@ iband_B = 'B' ;
 # Bands for V LF
 iband_V = 'V' ;
 
-plfe_K = np.zeros(shape = (len(models),len(mbins_K)))
-plfe_K_z1 = np.zeros(shape = (len(models),len(mbins_K)))
-plfe_r = np.zeros(shape = (len(models),len(mbins_r)))
-nf = np.zeros(shape = (len(models),len(mbins_r)))
-ntot = np.zeros(shape = (len(models),len(mbins_r)))
-plfe_HI = np.zeros(shape = (len(models),len(mbins_HI)))
+plfe_K = np.zeros(shape = (nmodels,len(mbins_K)))
+plfe_K_z1 = np.zeros(shape = (nmodels,len(mbins_K)))
+plfe_r = np.zeros(shape = (nmodels,len(mbins_r)))
+nf = np.zeros(shape = (nmodels,len(mbins_r)))
+ntot = np.zeros(shape = (nmodels,len(mbins_r)))
+plfe_HI = np.zeros(shape = (nmodels,len(mbins_HI)))
 print()
-vols = np.zeros(shape = (len(models)))
+vols = np.zeros(shape = (nmodels)))
 
+# read input_free_file
+file = open(input_file)
+line = file.readline() # comment line
 # loop over different runs
 for run in range(nmodels):
+    
+    line = file.readline()
+    # read free parameters
+    f_stab = line.split(' ')[0]
+    alpha_cool = line.split(' ')[1]
+    alpha_ret = line.split(' ')[2]
+    gamma_SN = line.split(' ')[3]
+    V_SNd = line.split(' ')[4]
+    V_SNb = line.split(' ')[5]
+    f_burst = line.split(' ')[6]
+    f_ellip = line.split(' ')[7]
+    v_SF = line.split(' ')[8]
+    f_SMBH = line.split(' ')[9]
 
+    run = 'Fstab'+f_stab+'_Acool'+alpha_cool+'_Aret'+alpha_ret+'gSN'+gamma_SN+'vSNd'+V_SNd+'vSNb'+V_SNb+'Fburst'+f_burst+'Fellip'+f_ellip+'vSF'+v_SF+'fSMBH'+f_SMBH
+    
     r50_e_A = np.array([])
     mag_r_e_A = np.array([])
     r50_l_A = np.array([])
@@ -189,12 +207,11 @@ for run in range(nmodels):
     mhot_A = []
     mhhalo_A = []
             
-    print(models[run])
     volh = 0.
     first = True
     for ivol in range(nvol):
         # z=0
-        infile = path+models[run]+'/iz128/ivol'+str(ivol)+'/galaxies.hdf5'
+        infile = path+model+run+'/iz128/ivol'+str(ivol)+'/galaxies.hdf5'
         print(infile)
         if (os.path.isfile(infile)):
             f = h5py.File(infile,'r')
@@ -349,7 +366,7 @@ for run in range(nmodels):
             print('Not found: ',infile)
 
         # z=1.1
-        infile = path+models[run]+'/iz95/ivol'+str(ivol)+'/galaxies.hdf5'
+        infile = path+model+run+'/iz95/ivol'+str(ivol)+'/galaxies.hdf5'
         print(infile)
         if (os.path.isfile(infile)):
             f = h5py.File(infile,'r')

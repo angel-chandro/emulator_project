@@ -38,13 +38,13 @@ Once the training models have been run, you have to generate the arrays (bins + 
 
 5. EMULATOR
 
-- hypercube_shuffle.py: once the SAM has been run over the 1000 models in case the sampling of the training, evaluation or test set doesn't seem to be adequate visually, shuffle the free parameters and the output from the observables.
+- #hypercube_shuffle.py: once the SAM has been run over the 1000 models in case the sampling of the training, evaluation or test set doesn't seem to be adequate visually, shuffle the free parameters and the output from the observables.
 
 TensorFlow codes in Jupiter notebook.
 
-- emulator_elliott-SAVE.ipynb: it trains the emulator and it saves it. It separates the 1000 models: 80% training set, 10% evaluation (used to impose the condition that ends the training), 10% test (to study and compare the emulator performance).
+- #emulator_elliott-SAVE.ipynb: it trains the emulator and it saves it. It separates the 1000 models: 80% training set, 10% evaluation (used to impose the condition that ends the training), 10% test (to study and compare the emulator performance).
 - hypercube_10000models.py: once the emulator is trained, span the whole parameter space through 10000 points in a MHL again make use of the emulator.
-- emulator_elliott-POST.ipynb: once the emulator trained, it generates the predictions of the observable functions to study the whole parameter space. Compute the chi square compared to the different observational data employed and it finds the set of free parameters most consistent to observations (best fit with the lowest chi square). Run the best fit with the SAM itself and compare both results. Some parts haven't been extrapolated to the current project yet.
+- #emulator_elliott-POST.ipynb: once the emulator trained, it generates the predictions of the observable functions to study the whole parameter space. Compute the chi square compared to the different observational data employed and it finds the set of free parameters most consistent to observations (best fit with the lowest chi square). Run the best fit with the SAM itself and compare both results. Some parts haven't been extrapolated to the current project yet.
 
 - #emulator_elliott-K-FOLD.ipynb: k-fold technique applied. Still not implemented.
 
