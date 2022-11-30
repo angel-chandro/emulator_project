@@ -6,7 +6,7 @@ Choose also the output observables functions and their specific bins from Elliot
 
 ----------------------------------------------------------------------------------------------
 
-2. MAXIMIN LATIN HYPERCUBE (MHL)
+2. MAXIMIN LATIN HYPERCUBE (MLH)
 
 Number of models we use for training following Elliott+2021: 1000 models. The values of the parameters for these 1000 models are distributed over a Latin Hypercube to have the best sampling of the parameter space with the minimum number of points.
 Separate 80% training set, 10% evaluation (used to impose the condition that ends the training), 10% test (to study and compare the emulator performance).
@@ -43,7 +43,7 @@ Once the training models have been run, you have to generate the arrays (bins + 
 TensorFlow codes in Jupiter notebook.
 
 - #emulator_elliott-SAVE.ipynb: it trains the emulator and it saves it. It separates the 1000 models: 80% training set, 10% evaluation (used to impose the condition that ends the training), 10% test (to study and compare the emulator performance).
-- hypercube_10000models.py: once the emulator is trained, span the whole parameter space through 10000 points in a MHL again make use of the emulator.
+- hypercube_10000models.py: once the emulator is trained, span the whole parameter space through 10000 points in a MLH again make use of the emulator.
 - #emulator_elliott-POST.ipynb: once the emulator trained, it generates the predictions of the observable functions to study the whole parameter space. Compute the chi square compared to the different observational data employed and it finds the set of free parameters most consistent to observations (best fit with the lowest chi square). Run the best fit with the SAM itself and compare both results. Some parts haven't been extrapolated to the current project yet.
 
 - #emulator_elliott-SAVE-kfold.ipynb: k-fold technique applied. Still not implemented.
