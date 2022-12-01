@@ -476,7 +476,7 @@ ax22.set_xlim(-17,-23)
 ax22.set_ylim(-2.8,-1.2)
 
 #plt.show()
-plt.savefig('calibration_plots'+posf+'.svg',facecolor='white', transparent=False)
+plt.savefig('calibration_plots'+posf+'.png',facecolor='white', transparent=False)
 
 
 plt.rcParams.update({'font.size': 16})
@@ -512,7 +512,7 @@ plt.text(-24,-2,'z=1.1',fontsize=25)
 # Put a legend to the right of the current axis
 plt.legend(loc='lower left')#, bbox_to_anchor=(1, 0.5))
 #plt.show()
-plt.savefig('KLF_z'+str(z1)+posf+'.svg',facecolor='white', transparent=False)
+plt.savefig('KLF_z'+str(z1)+posf+'.png',facecolor='white', transparent=False)
 
 
 # mgas fraction
@@ -553,4 +553,4 @@ plt.ylabel('$M_{hot,gas}/M_{hhalo}$')
 plt.xlim(13,15)
 plt.ylim(0,0.16)
 #plt.show()
-plt.savefig('mgasf_z'+str(z)+posf+'.svg',facecolor='white', transparent=False)
+plt.savefig('mgasf_z'+str(z)+posf+'.png',facecolor='white', transparent=False)
