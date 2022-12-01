@@ -38,7 +38,7 @@ Once the training models have been run, you have to generate the arrays (bins + 
 
 5. EMULATOR
 
-- #hypercube_shuffle.py: once the SAM has been run over the 1000 models in case the sampling of the training, evaluation or test set doesn't seem to be adequate visually, shuffle the free parameters and the output from the observables.
+- #hypercube_shuffle.py: once the SAM has been run over the 1000 models in case the sampling of the training, evaluation or test set doesn't seem to be adequate visually, shuffle the free parameters and the output from the observables. IN CASE K-FOLD IS NOT IMPLEMENTED.
 
 TensorFlow codes in Jupiter notebook.
 
