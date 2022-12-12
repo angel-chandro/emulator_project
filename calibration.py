@@ -47,9 +47,9 @@ def percentiles(val,data,weights=None):
 
 
 path = '/home/chandro/Galform_Out/simulations/'
-models = ['/neta_simplified/UNIT100/gp19.vimal/']
+models = ['/neta_simplified/test/UNIT100/gp19.vimal/']
 nvol = 64
-end = '_UNIT100'
+end = '_UNIT100_test'
 z = 0
 z1 = 1.1
 outpath = '/home/chandro/galform/elliott/'
@@ -269,10 +269,10 @@ for run in range(len(models)):
             mag_r_e_A = np.concatenate([mag_r_e_A,mag_r_e])
             # late type
             ind_l = np.where(btr_r<0.5)
-            magr_l = mag_r[ind_l] 
+            mag_r_l = mag_r[ind_l] 
             r50_l = r50[ind_l] # kpc/h
             r50_l_A = np.concatenate([r50_l_A,r50_l])
-            mag_r_l_A = np.concatenate([mag_r_l_A,mag_r_e])
+            mag_r_l_A = np.concatenate([mag_r_l_A,mag_r_l])
 
             # early type fraction
             H_tot, bins_edges_tot = np.histogram(mag_r,bins=np.append(mbins_r,mupp_r)) # m-5logh (AB)
