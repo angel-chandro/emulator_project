@@ -7,6 +7,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import mpl_style
 plt.style.use(mpl_style.style1)
+import matplotlib.gridspec as gridspec
 
 # code that plots the different data from 1 single SAM run
 # compared to observations
@@ -35,9 +36,154 @@ def percentiles(val,data,weights=None):
 
 z = 0
 z1 = 1.1
-posf = '_UNIT'
+posf = '_UNIT_models'
+posf_d = "_UNIT_250_dispersion_simp"
+vol_t = 1000
+subvol = 250
+nbox_l = int(vol_t/subvol)
 
-# loading data
+# plot 1
+fig = plt.figure(constrained_layout=True,figsize=(15,12))
+gs = fig.add_gridspec(3, 3)
+ax00 = fig.add_subplot(gs[0,0])
+ax01 = fig.add_subplot(gs[0,1])
+ax02 = fig.add_subplot(gs[0,2])
+ax10 = fig.add_subplot(gs[1,0])
+ax11 = fig.add_subplot(gs[1,1])
+ax12 = fig.add_subplot(gs[1,2])
+ax20 = fig.add_subplot(gs[2,0])
+ax21 = fig.add_subplot(gs[2,1])
+ax22 = fig.add_subplot(gs[2,2])
+
+ax00.set_xlabel("$ M_{K}^{AB} - 5\\rm{log}(\it{h})$")
+ax00.set_ylabel("$\\rm{log}(\Phi/ \it{h^{3}} \\rm{Mpc^{-3} mag^{-1}})$")
+ax00.set_xlim(-18,-24.5)
+ax00.set_ylim(-6.5,-0.5)
+ax01.set_xlabel("$ M_{r}^{AB} - 5\\rm{log}(\it{h})$")
+ax01.set_ylabel("$\\rm{log}(\Phi/ \it{h^{3}} \\rm{Mpc^{-3} mag^{-1}})$")
+ax01.set_xlim(-18,-24.5)
+ax01.set_ylim(-7,-1)
+ax02.set_xlabel("$ M_{r}^{AB} - 5\\rm{log}(\it{h})$")
+ax02.set_ylabel('$\\rm{log}(\it{r_{50}}/ \it{h^{-1}}\\rm{kpc} )$')
+ax02.set_xlim(-15,-24)
+ax02.set_ylim(-1,1.5)
+ax10.set_xlabel("$ M_{r}^{AB} - 5\\rm{log}(\it{h})$")
+ax10.set_ylabel('$\\rm{log}(\it{r_{50}}/ \it{h^{-1}}\\rm{kpc} )$')
+ax10.set_xlim(-15,-24)
+ax10.set_ylim(-1,1.5)
+ax11.set_xlabel('$\\rm{log}(\it{M_{HI}}/ \it{h^{-2}}\\rm{M_{\odot}} )$')
+ax11.set_ylabel("$\\rm{log}(\\rm{dn/dlog\it{M_{HI}}/ \it{h^{3}} \\rm{Mpc^{-3}}})$")
+ax11.set_xlim(8,11)
+ax11.set_ylim(-6,0)
+ax12.set_xlabel("$ M_{r}^{AB} - 5\\rm{log}(\it{h})$")
+ax12.set_ylabel("f(early type)")
+ax12.set_xlim(-15,-24)
+ax12.set_ylim(0,1)
+ax20.set_xlabel('$\\rm{log}(\it{V_{c}}/\\rm{km s^{-1}})$')
+ax20.set_ylabel("$ M_{I}^{Vega} - 5\\rm{log}(\it{h})$")
+ax20.set_xlim(1.5,2.65)
+ax20.set_ylim(-24,-13)
+ax20.invert_yaxis()
+ax21.set_xlabel('$\\rm{log}(\it{M_{bulge}}/ \it{h^{-1}}\\rm{M_{\odot}} )$')
+ax21.set_ylabel('$\\rm{log}(\it{M_{BH}}/ \it{h^{-1}}\\rm{M_{\odot}} )$')
+ax21.set_xlim(8,13)
+ax21.set_ylim(5,10)
+ax22.set_xlabel("$ M_{r}^{AB} - 5\\rm{log}(\it{h})$")
+ax22.set_ylabel('$\\rm{log}(\it{Z_{star}}(\\rm{V-wt}))$')
+ax22.set_xlim(-17,-23)
+ax22.set_ylim(-2.8,-1.2)
+
+
+# plot 2
+fig_r = plt.figure(constrained_layout=True,figsize=(15,12))
+gs_r = fig_r.add_gridspec(3, 3)
+ax00_r = fig_r.add_subplot(gs_r[0,0])
+ax01_r = fig_r.add_subplot(gs_r[0,1])
+ax02_r = fig_r.add_subplot(gs_r[0,2])
+ax10_r = fig_r.add_subplot(gs_r[1,0])
+ax11_r = fig_r.add_subplot(gs_r[1,1])
+ax12_r = fig_r.add_subplot(gs_r[1,2])
+ax20_r = fig_r.add_subplot(gs_r[2,0])
+ax21_r = fig_r.add_subplot(gs_r[2,1])
+ax22_r = fig_r.add_subplot(gs_r[2,2])
+
+ax00_r.set_xlabel("$ M_{K}^{AB} - 5\\rm{log}(\it{h})$")
+ax00_r.set_ylabel("Ratio $\\rm{log}(\Phi/ \it{h^{3}} \\rm{Mpc^{-3} mag^{-1}})$")
+ax00_r.set_xlim(-18,-24.5)
+ax00_r.set_ylim(0.8,1.2)
+ax01_r.set_xlabel("$ M_{r}^{AB} - 5\\rm{log}(\it{h})$")
+ax01_r.set_ylabel("Ratio $\\rm{log}(\Phi/ \it{h^{3}} \\rm{Mpc^{-3} mag^{-1}})$")
+ax01_r.set_xlim(-18,-24.5)
+ax01_r.set_ylim(0.8,1.2)
+ax02_r.set_xlabel("$ M_{r}^{AB} - 5\\rm{log}(\it{h})$")
+ax02_r.set_ylabel('Ratio $\\rm{log}(\it{r_{50}}/ \it{h^{-1}}\\rm{kpc} )$')
+ax02_r.set_xlim(-15,-24)
+ax02_r.set_ylim(0.8,1.2)
+ax10_r.set_xlabel("$ M_{r}^{AB} - 5\\rm{log}(\it{h})$")
+ax10_r.set_ylabel('Ratio $\\rm{log}(\it{r_{50}}/ \it{h^{-1}}\\rm{kpc} )$')
+ax10_r.set_xlim(-15,-24)
+ax10_r.set_ylim(0.8,1.2)
+ax11_r.set_xlabel('$\\rm{log}(\it{M_{HI}}/ \it{h^{-2}}\\rm{M_{\odot}} )$')
+ax11_r.set_ylabel("Ratio $\\rm{log}(\\rm{dn/dlog\it{M_{HI}}/ \it{h^{3}} \\rm{Mpc^{-3}}})$")
+ax11_r.set_xlim(8,11)
+ax11_r.set_ylim(0.8,1.2)
+ax12_r.set_xlabel("$ M_{r}^{AB} - 5\\rm{log}(\it{h})$")
+ax12_r.set_ylabel("Ratio f(early type)")
+ax12_r.set_xlim(-15,-24)
+ax12_r.set_ylim(0.8,1.2)
+ax20_r.set_xlabel('$\\rm{log}(\it{V_{c}}/\\rm{km s^{-1}})$')
+ax20_r.set_ylabel("Ratio $ M_{I}^{Vega} - 5\\rm{log}(\it{h})$")
+ax20_r.set_xlim(1.5,2.65)
+ax20_r.set_ylim(0.8,1.2)
+ax20_r.invert_yaxis()
+ax21_r.set_xlabel('$\\rm{log}(\it{M_{bulge}}/ \it{h^{-1}}\\rm{M_{\odot}} )$')
+ax21_r.set_ylabel('Ratio $\\rm{log}(\it{M_{BH}}/ \it{h^{-1}}\\rm{M_{\odot}} )$')
+ax21_r.set_xlim(8,13)
+ax21_r.set_ylim(0.8,1.2)
+ax22_r.set_xlabel("$ M_{r}^{AB} - 5\\rm{log}(\it{h})$")
+ax22_r.set_ylabel('Ratio $\\rm{log}(\it{Z_{star}}(\\rm{V-wt}))$')
+ax22_r.set_xlim(-17,-23)
+ax22_r.set_ylim(0.8,1.2)
+
+
+# other plots
+fig1 = plt.figure(figsize=(7.8,10.8))
+gs = gridspec.GridSpec(5,1)
+gs.update(wspace=0., hspace=0.)
+axb1 = plt.subplot(gs[-2:,:])
+axb1.set_autoscale_on(False) ; axb1.minorticks_on()
+axb1.set_xlim(-18,-26) ; axb1.set_ylim(0.8,1.2)
+axb1.set_xlabel("$ M_{K}^{AB} - 5\\rm{log}(\it{h})$")
+axb1.set_ylabel("Ratio $\\rm{log}(\Phi/ \it{h^{3}} \\rm{Mpc^{-3} mag^{-1}})$")
+ax1 = plt.subplot(gs[:-2,:],sharex=axb1)
+ax1.set_ylabel("$\\rm{log}(\Phi/ \it{h^{3}} \\rm{Mpc^{-3} mag^{-1}})$")
+ax1.set_autoscale_on(False) ; ax1.minorticks_on()
+ax1.set_ylim(-6,-1) ; start, end = ax1.get_xlim()
+ax1.xaxis.set_ticks(np.arange(-19, -25, 1.))
+axb1.yaxis.set_ticks(np.arange(0.8, 1.2, 0.1))
+#ax.plot([],[],' ')
+#ztext = 'z = '+str(redshift)
+#ax.text(13.5,-9, ztext)
+plt.setp(ax1.get_xticklabels(), visible=False)
+
+fig2 = plt.figure(figsize=(7.8,10.8))
+gs = gridspec.GridSpec(5,1)
+gs.update(wspace=0., hspace=0.)
+axb2 = plt.subplot(gs[-2:,:])
+axb2.set_autoscale_on(False) ; axb2.minorticks_on()
+axb2.set_xlim(13,15) ; axb2.set_ylim(0.8,1.2)
+axb2.set_xlabel('$\\rm{log}(\it{M_{hhalo}}/ \it{M_{\odot}})$')
+axb2.set_ylabel('Ratio $M_{hot,gas}/M_{hhalo}$')
+ax2 = plt.subplot(gs[:-2,:],sharex=axb2)
+ax2.set_ylabel("$M_{hot,gas}/M_{hhalo}$")
+ax2.set_autoscale_on(False) ; ax2.minorticks_on()
+ax2.set_ylim(0,0.16) ; start, end = ax2.get_xlim()
+ax2.xaxis.set_ticks(np.arange(-13, -15, 1.))
+axb2.yaxis.set_ticks(np.arange(0.8, 1.2, 0.1)) 
+plt.setp(ax2.get_xticklabels(), visible=False)
+ 
+
+# loading "true" value (whole volume)
 m_K, lf_K = np.loadtxt('KLF_z'+str(z)+posf+'.dat', usecols=(0,1), unpack=True)
 m_K_z1, lf_K_z1 = np.loadtxt('KLF_z'+str(z1)+posf+'.dat', usecols=(0,1), unpack=True)
 m_r, lf_r = np.loadtxt('rLF_z'+str(z)+posf+'.dat', usecols=(0,1), unpack=True)
@@ -46,20 +192,148 @@ m_r_l, r_l = np.loadtxt('late-t_z'+str(z)+posf+'.dat', usecols=(0,1), unpack=Tru
 M_HI, HImf = np.loadtxt('HIMF_z'+str(z)+posf+'.dat', usecols=(0,1), unpack=True)
 m_r_ef, ef = np.loadtxt('early-f_z'+str(z)+posf+'.dat', usecols=(0,1), unpack=True)
 vc, m_I = np.loadtxt('TF_z'+str(z)+posf+'.dat', usecols=(0,1), unpack=True)
+m_I = m_I
 Mbulge, Mbh = np.loadtxt('bulge-BH_z'+str(z)+posf+'.dat', usecols=(0,1), unpack=True)
-Mbulge_cent, Mbh_cent = np.loadtxt('bulge-BH_cent_z'+str(z)+posf+'.dat', usecols=(0,1), unpack=True)
-Mbulge_sat, Mbh_sat = np.loadtxt('bulge-BH_sat_z'+str(z)+posf+'.dat', usecols=(0,1), unpack=True)
 m_r_z, Zstar = np.loadtxt('Zstars_z'+str(z)+posf+'.dat', usecols=(0,1), unpack=True)
 mhhalo_g, ratio_g = np.loadtxt('mgasf_z'+str(z)+posf+'.dat', usecols=(0,1), unpack=True)
 
-# plot
-fig = plt.figure(constrained_layout=True,figsize=(15,12))
-gs = fig.add_gridspec(3, 3)
+# loading dispersion data (subvolumes)
+A = np.loadtxt('KLF_z'+str(z)+posf_d+'.dat')
+#m_K = A[:,0]
+lf_K_m = A[:,1:]
+B = np.loadtxt('KLF_z'+str(z1)+posf_d+'.dat')
+#m_K_z1 = B[:,0]
+lf_K_z1_m = B[:,1:]
+C = np.loadtxt('rLF_z'+str(z)+posf_d+'.dat')
+#m_r = C[:,0]
+lf_r_m = C[:,1:]
+D = np.loadtxt('early-t_z'+str(z)+posf_d+'.dat')
+#m_r_e_m = D[:,0]
+r_e_m = D[:,1:]
+E = np.loadtxt('late-t_z'+str(z)+posf_d+'.dat')
+#m_r_l_m = E[:,0]
+r_l_m = E[:,1:]
+F = np.loadtxt('HIMF_z'+str(z)+posf_d+'.dat')
+#M_HI = F[:,0]
+HImf_m = F[:,1:]
+G = np.loadtxt('early-f_z'+str(z)+posf_d+'.dat')
+#m_r_ef = G[:,0]
+ef_m = G[:,1:]
+H = np.loadtxt('TF_z'+str(z)+posf_d+'.dat')
+#vc_m = H[:,0]
+m_I_m = H[:,1:]
+I = np.loadtxt('bulge-BH_z'+str(z)+posf_d+'.dat')
+#Mbulge_m = I[:,0]
+Mbh_m = I[:,1:]
+J = np.loadtxt('Zstars_z'+str(z)+posf_d+'.dat')
+#m_r_z_m = J[:,0]
+Zstar_m = J[:,1:]
+K = np.loadtxt('mgasf_z'+str(z)+posf_d+'.dat')
+#mhhalo_g_m = K[:,0]
+ratio_g_m = K[:,1:]
+
+# plots
 plt.rcParams.update({'font.size': 12})
-m = 18
-l = 30
 matplotlib.rc('xtick', labelsize=18) 
 matplotlib.rc('ytick', labelsize=18)
+
+ind_K_r = np.where(lf_K[:] != 0)
+ind_K_z1_r = np.where(lf_K_z1[:] != 0)
+ind_r_r = np.where(lf_r[:] != 0)
+ind_et_r = np.where(r_e[:] > -99999)
+ind_lt_r = np.where(r_l[:] > 0)
+ind_HI_r = np.where(HImf[:] != 0)
+ind_f_r = np.where(ef[:] > 0)
+ind_TF_r = np.where(m_I[:] != 0)
+ind_BH_r = np.where(Mbh[:] > 0)
+ind_z_r = np.where(Zstar[:] != 0)
+ind_g_r = np.where(ratio_g[:] != 0)
+
+lf_T = 0
+
+for i in range(nbox_l**3):
+
+    lf_T += lf_K_m[:,i]*250**3  
+    
+    ind_K = np.where(lf_K_m[:,i] != 0)
+    ind_K_i = np.intersect1d(ind_K,ind_K_r)
+    ax00.plot(m_K[ind_K],np.transpose(lf_K_m[ind_K,i]),c='red',ls='-')                                                                                                           
+    ax00_r.plot(m_K[ind_K_i],np.transpose(lf_K_m[ind_K_i,i])/np.transpose(lf_K[ind_K_i]),c='red',ls='-')
+    ind_r = np.where(lf_r_m[:,i] != 0)
+    ind_r_i = np.intersect1d(ind_r,ind_r_r)
+    ax01.plot(m_r[ind_r],np.transpose(lf_r_m[ind_r,i]),c='red',ls='-')                                                                                                           
+    ax01_r.plot(m_r[ind_r_i],np.transpose(lf_r_m[ind_r_i,i])/np.transpose(lf_r[ind_r_i]),c='red',ls='-')
+    ind_et = np.where(r_e_m[:,i] > -99999)
+    ind_et_i = np.intersect1d(ind_et,ind_et_r)
+    ax02.plot(m_r_e[ind_et],np.transpose(r_e_m[ind_et,i]),c='red',ls='-')                                                                                                     
+    ax02_r.plot(m_r_e[ind_et_i],np.transpose(r_e_m[ind_et_i,i])/np.transpose(r_e[ind_et_i]),c='red',ls='-')
+    ind_lt = np.where(r_l_m[:,i] > 0)
+    ind_lt_i = np.intersect1d(ind_lt,ind_lt_r)
+    ax10.plot(m_r_l[ind_lt],np.transpose(r_l_m[ind_lt,i]),c='red',ls='-')                                                                                                     
+    ax10_r.plot(m_r_l[ind_lt_i],np.transpose(r_l_m[ind_lt_i,i])/np.transpose(r_l[ind_lt_i]),c='red',ls='-')
+    ind_HI = np.where(HImf_m[:,i] != 0)
+    ind_HI_i = np.intersect1d(ind_HI,ind_HI_r)
+    ax11.plot(M_HI[ind_HI],np.transpose(HImf_m[ind_HI,i]),c='red',ls='-')                                                                                                       
+    ax11_r.plot(M_HI[ind_HI_i],np.transpose(HImf_m[ind_HI_i,i])/np.transpose(HImf[ind_HI_i]),c='red',ls='-')
+    ind_f = np.where(ef_m[:,i] > 0)
+    ind_f_i = np.intersect1d(ind_f,ind_f_r)
+    ax12.plot(m_r_ef[ind_f],np.transpose(ef_m[ind_f,i]),c='red',ls='-')                                                                                                               
+    ax12_r.plot(m_r_ef[ind_f_i],np.transpose(ef_m[ind_f_i,i])/np.transpose(ef[ind_f_i]),c='red',ls='-')
+    ind_TF = np.where(m_I_m[:,i] != 0)
+    ind_TF_i = np.intersect1d(ind_TF,ind_TF_r)
+    ax20.plot(vc[ind_TF],np.transpose(m_I_m[ind_TF,i]),c='red',ls='-')                                                                                                       
+    ax20_r.plot(vc[ind_TF_i],np.transpose(m_I_m[ind_TF_i,i])/np.transpose(m_I[ind_TF_i]),c='red',ls='-')
+    ind_BH = np.where(Mbh_m[:,i] > 0)
+    ind_BH_i = np.intersect1d(ind_BH,ind_BH_r)
+    ax21.plot(Mbulge[ind_BH],np.transpose(Mbh_m[ind_BH,i]),c='red',ls='-')                                                                                                       
+    ax21_r.plot(Mbulge[ind_BH_i],np.transpose(Mbh_m[ind_BH_i,i])/np.transpose(Mbh[ind_BH_i]),c='red',ls='-')
+    ind_z = np.where(Zstar_m[:,i] != 0)
+    ind_z_i = np.intersect1d(ind_z,ind_z_r)
+    ax22.plot(m_r_z[ind_z],np.transpose(Zstar_m[ind_z,i]),c='red',ls='-')
+    ax22_r.plot(m_r_z[ind_z_i],np.transpose(Zstar_m[ind_z_i,i])/np.transpose(Zstar[ind_z_i]),c='red',ls='-')
+
+    ind_K_z1 = np.where(lf_K_z1_m[:,i] != 0)
+    ind_K_z1_i = np.intersect1d(ind_K_z1,ind_K_z1_r)
+    ax1.plot(m_K[ind_K_z1],np.transpose(lf_K_z1_m[ind_K_z1,i]),c='red',ls='-')                                                                                                         
+    axb1.plot(m_K[ind_K_z1_i],np.transpose(lf_K_z1_m[ind_K_z1_i,i])/np.transpose(lf_K_z1[ind_K_z1_i]),c='red',ls='-') 
+    ind_g = np.where(ratio_g_m[:,i] != 0)
+    ind_g_i = np.intersect1d(ind_g,ind_g_r)
+    ax2.plot(mhhalo_g[ind_g],np.transpose(ratio_g_m[ind_g,i]),c='red',ls='-')
+    axb2.plot(mhhalo_g[ind_g_i],np.transpose(ratio_g_m[ind_g_i,i])/np.transpose(ratio_g[ind_g_i]),c='red',ls='-') 
+
+
+print(lf_T)
+print(lf_K*1000**3)
+ax00.plot(m_K[ind_K_r],np.transpose(lf_K[ind_K_r]),c='black',ls='-')                                                                                                           
+ax01.plot(m_r[ind_r_r],np.transpose(lf_r[ind_r_r]),c='black',ls='-')                                                                                                           
+ax02.plot(m_r_e[ind_et_r],np.transpose(r_e[ind_et_r]),c='black',ls='-')                                                                                                     
+ax10.plot(m_r_l[ind_lt_r],np.transpose(r_l[ind_lt_r]),c='black',ls='-')                                                                                                     
+ax11.plot(M_HI[ind_HI_r],np.transpose(HImf[ind_HI_r]),c='black',ls='-')                                                                                                       
+ax12.plot(m_r_ef[ind_f_r],np.transpose(ef[ind_f_r]),c='black',ls='-')                                                                                                               
+ax20.plot(vc[ind_TF_r],np.transpose(m_I[ind_TF_r]),c='black',ls='-')                                                                                                       
+ax21.plot(Mbulge[ind_BH_r],np.transpose(Mbh[ind_BH_r]),c='black',ls='-')                                                                                                       
+ax22.plot(m_r_z[ind_z_r],np.transpose(Zstar[ind_z_r]),c='black',ls='-')
+
+ax1.plot(m_K[ind_K_z1_r],np.transpose(lf_K_z1[ind_K_z1_r]),c='black',ls='-')
+ax2.plot(mhhalo_g[ind_g_r],np.transpose(ratio_g[ind_g_r]),c='black',ls='-')
+
+ax00_r.axhline(y=1,color='black',ls='-')                                                                                                           
+ax01_r.axhline(y=1,color='black',ls='-')                                                                                                           
+ax02_r.axhline(y=1,color='black',ls='-')                                                                                                           
+ax10_r.axhline(y=1,color='black',ls='-')                                                                                                           
+ax11_r.axhline(y=1,color='black',ls='-')                                                                                                           
+ax12_r.axhline(y=1,color='black',ls='-')                                                                                                           
+ax20_r.axhline(y=1,color='black',ls='-')                                                                                                           
+ax21_r.axhline(y=1,color='black',ls='-')                                                                                                           
+ax22_r.axhline(y=1,color='black',ls='-')                                                                                                           
+axb1.axhline(y=1,color='black',ls='-')                                                                                                           
+axb2.axhline(y=1,color='black',ls='-')                                                                                                           
+
+#plt.show()
+fig.savefig('calibration_plots_UNIT_250_dispersion_simp_ratio1.png',facecolor='white', transparent=False)
+fig_r.savefig('calibration_plots_UNIT_250_dispersion_simp_ratio2.png',facecolor='white', transparent=False)
+fig1.savefig('KLF_z1_UNIT_250_dispersion_simp_ratio.png',facecolor='white', transparent=False)
+fig2.savefig('mgasf_z0_UNIT_250_dispersion_simp_ratio.png',facecolor='white', transparent=False)
 
 # K LF
 # Driver+2012
@@ -244,7 +518,6 @@ obs_ef = '/home/chandro/Moffett+2016/ETfracvsmr.tab'
 mr, frac_lo, frac, frac_up = np.loadtxt(obs_ef,unpack=True)
 ind = np.where(frac > -999990.)
 x_ef = mr[ind]
-x_ef = x_ef - 5*np.log10(0.7) # M_r-5log(h), h=0.7 from Moffet+2016
 y_ef = frac[ind]
 eh_ef = frac_up[ind] - frac[ind]
 el_ef = frac[ind] - frac_lo[ind]
@@ -260,7 +533,7 @@ m_r_ef_f = m_r_ef[ind]
 
 ax12 = fig.add_subplot(gs[1,2])
 ax12.plot(m_r_ef_f,ef_f,c='blue',ls='-')    
-ax12.errorbar(x_ef, y_ef, yerr=[el_ef,eh_ef], ls='None', mfc='None', ecolor = 'black', mec='black',marker='s',zorder=200,label="Moffett+2016")
+ax12.errorbar(x_ef, y_ef, yerr=[eh_ef,el_ef], ls='None', mfc='None', ecolor = 'black', mec='black',marker='s',zorder=200,label="Moffett+2016")
 ax12.errorbar(x2_ef, y2_ef, ls='None', mfc='None', ecolor = 'grey', mec='grey',marker='s',zorder=200,label="Gonzalez+2009")
 ax12.set_xlabel("$ M_{r}^{AB} - 5\\rm{log}(\it{h})$")
 ax12.set_ylabel("f(early type)")
@@ -410,7 +683,6 @@ re[ind] = (57/60)*re_arcsec[ind]
 re = hobs*re
 # convert from [Z/H] to Z
 lgzstar = lgmet + np.log10(0.0173)
-#lgzstar = lgmet + np.log10(0.0122)
 # correct metallicities to global values based on assumed constant gradient
 # do not have measured re for all galaxies, so for missing values, use
 # least-squares linear fit to log(re) vs M_R for same data
@@ -434,7 +706,6 @@ lgrap_re = np.log10(rap_re)
 # read data on aperture correction factor from file
 # this gives Z(<r)/Ze (lum-wtd) as fn of r/re
 file = "/home/chandro/galform/SM/Zcorr/Zcorrection_alpha0.15.data"
-#file = "/home/chandro/galform/SM/Zcorr/Zcorrection_alpha0.3.data"
 r, zav = np.loadtxt(file,unpack=True,usecols=[0,1])
 lgr = np.log10(r)
 lgzav = np.log10(zav)

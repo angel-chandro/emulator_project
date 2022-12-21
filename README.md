@@ -1,8 +1,20 @@
 
+For the fnl_sam simulations I have been running the Dhalos code in the path /home/chandro/dhalo-trees_rhalf+snap_nfids_mod (it is exactly the same as the one in /home/chandro/dhalo-trees_rhalf+snap_nfids_nftab, but I have been using it for different tests). The different parameter files are stored in the directory /home/chandro/dhalo-trees_rhalf+snap_nfids_mod/Parameters/fnl_sam. The output data has been stored for the moment in the directory /home/chandro/fnl_sam.
+
+PROBLEMS:
+- the dispersion code is given wrong results due to the fact that the type 2 galaxies are defined with positions=-1 and velocities=-2 even when the Vimal's merging scheme is employed.
+- the simulation with the Dhalos merger trees hasn't been run over Galform since the number of merging galaxies is higher than the limit imposed (NMERGEMAX=5000). The error is found in "merging.find_merger_time.f90".
+
+
+-------------------------------------------------------------------------------------------
+
 1. Choose the input free parameters of the SAM whose parameter space we want to analyse and their range from Elliott et al. 2021 (10 free parameters).
 Choose also the output observables functions and their specific bins from Elliott+2021. 
 - calibration.py: given the Galform output, it generates the observable functions. It also save the bins and the values of the observable functions (data to be used by the emulator) we consider for calibration for the models.
 - calibration_plots.py: make the calibration plots with the data obtained from calibration.py 
+- calibration_models.py: compute and graphic the calibration plots for 1 or more than 1 models to compare different runs. 
+- calibration_dispersion.py: compute and graphic the calibration plots for 250Mpc/h subboxes of the UNIT simulation to analyse the dispersion of these plots. 
+- calibration_dispersion_ratio.py: given the output from calibration.dispersion.py it computes the ratio between the subboxes and the "real value" of the whole 1000Mpc/h volume of the UNIT simulation. This is a visible way to quantify the dispersion, which could be useful to define the range of these plots where we are going to train the emulator (where the dispersion is lower than 10% f.e.). 
 
 ----------------------------------------------------------------------------------------------
 
