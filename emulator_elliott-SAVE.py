@@ -31,26 +31,32 @@ ylabel = []
 xlim = []
 ylim = []
 # weight for each plot in the emulator training
-weight = [1,1,1,1,1,1,1,1,1,1]
+weight = [2,2,1,1,3,1,1,1,1,2,1]
+# cuts
+lcut = []
+ucut = []
 
 def check_cut(ind,nmodels,bins,output,xlab,ylab):
+    # check the cuts that has just been made in a plot
+    # to see if the ranges are correct
     count = 0
     fig = plt.figure(ind)
     for i in range(nmodels):
-        count += np.shape(np.where(output[:,i]==0))[1]%%!
+        count += np.shape(np.where(output[:,i]==0))[1]
         plt.plot(bins[:,0],output[:,i])
     plt.xlabel(xlab)
     plt.ylabel(ylab)
     plt.show()
     return count
-        
+
 # loading data
-# DATA MUST BE ALREADY SHUFFLE
+# DATA MUST BE ALREADY SHUFFLE (no K-FOLD case)
 len_b = np.array([])
 bins = np.array([])
 output = np.array([])
 for i in range(len(plots)):
-    
+    # load data from file into bins and output
+    # len_b to see the length of each plot
     file = plots[i]+sim+'.dat'
     data = np.loadtxt(file)
     bins0,output0 = cut_plot(lbins,ubins,data)
@@ -60,17 +66,18 @@ for i in range(len(plots)):
     bins = np.concatenate([bins,bins0])
     output = np.concatenate([output,output0])
 
+plt.close('all')
 nbins = len(bins)
         
 # input free parameters (Latin Hypercube)
-# DATA ALREADY SHUFFLE IN THE SAME WAY AS OUTPUT
+# DATA ALREADY SHUFFLE IN THE SAME WAY AS OUTPUT (no K-FOLD case)
 input_p = np.loadtxt('input_shuffle.dat')
 
     
-# divide training (80%), evaluation (20%), test (20%)
+# divide training (80%), evaluation (10%), test (10%)
 n_train = 0.8*nmodels
-n_eval = 0.2*nmodels
-n_test = 0.2*nmodels
+n_eval = 0.1*nmodels
+n_test = 0.1*nmodels
 
 output = np.transpose(output)
 output_test = output[:n_test]
@@ -93,10 +100,10 @@ output_eval = output_training[n_train:]
 # over parameter space
 # 10 free parameters
 
-plt.close('all')
 plt.rcParams.update({'font.size': 22})
 
 def plot_LH(ind,i1,i2,xlab,ylab,xlim,ylim):
+    # plot the LH points
     fig = plt.figure(ind,figsize=(9.8,9.8))
     ax = plt.subplot(111)
     ax.plot(x_train[:,i1],x_train[:,i2],'.b',markersize=15,label='Training')
@@ -118,9 +125,12 @@ def plot_LH(ind,i1,i2,xlab,ylab,xlim,ylim):
 for i in range(nparam):
     for j in range(nparam):
         plot_LH(i+j,i,j,)
-
+        
+plt.close('all')
 
 def check_training(ind,n_train,bins,output,xlab,ylab):
+    # check the behaviour of the training model
+    # and if they span the parameter space properly
     fig = plt.figure(ind)
     for i in range(n_train):
         plt.plot(bins[:,0],output[:,i])
@@ -128,7 +138,6 @@ def check_training(ind,n_train,bins,output,xlab,ylab):
     plt.ylabel(ylab)
     plt.show()
     return
-
 
 acum = 0
 for i in range(len(plots)):
@@ -166,10 +175,12 @@ for i in range(len(plots)):
     elif plots[i]=='mgasf_z0':
         check_training(0,n_train,bins[acum:acum+len_b[10]],output[acum:acum+len_b[10]])
         acum += len_b[10]
+        
+plt.close('all')
 
-# SOLVE PROBLEM IF KLF_z=1.1 IS NOT USED AND MASS GAS FRACTION IS
+# SOLVE PROBLEM IF KLF_z=1.1 IS NOT USED AND MASS GAS FRACTION IS 
 
-
+# define the emulator configuration
 nepoch = 500 # to impose the condition when to stop the training
 inputs = keras.Input(shape=(nparam,), name="digits")
 x = layers.Dense(512, activation=tf.keras.activations.sigmoid, name="dense_1")(inputs)
@@ -177,6 +188,14 @@ x = layers.Dense(512, activation=tf.keras.activations.sigmoid, name="dense_2")(x
 outputs = layers.Dense(nbins, activation="linear", name="predictions")(x)
 
 model = keras.Model(inputs=inputs, outputs=outputs)
+
+Here's what the typical end-to-end workflow looks like, consisting of:
+
+- Training
+- Validation on a holdout set generated from the original training data
+- Evaluation on the test data
+
+We'll use MNIST data for this example.
 
 # Preprocess the data (these are NumPy arrays)
 x_train_f = x_train.astype("float32")
@@ -186,6 +205,9 @@ y_train_f = y_train.astype("float32")
 y_eval_f = y_eval.astype("float32")
 y_test_f = y_test.astype("float32")
 
+We specify the training configuration (optimizer, loss, metrics):
+
+# emulator configuration
 model.compile(
     optimizer=tf.keras.optimizers.Adam(amsgrad=True,name='Adam_ams'),  # Optimizer
     # Loss function to minimize: mean absolute error
@@ -193,6 +215,10 @@ model.compile(
     # List of metrics to monitor
     #metrics=['accuracy'],
 )
+
+We call `fit()`, which will train the model by slicing the data into "batches" of size
+`batch_size`, and repeatedly iterating over the entire dataset for a given number of
+`epochs`.
 
 loss = []
 val_loss = []
@@ -213,8 +239,11 @@ v = []
 #    keras.callbacks.EarlyStopping(monitor='loss', patience=30, verbose=1, restore_best_weights=True)
 #]
 
+# only update the emulator when it improves its performance over the validation data
+# stop if nepoch have passed without improvement
 callback = keras.callbacks.EarlyStopping(monitor='loss', patience=nepoch, verbose=1, restore_best_weights=True)
 
+# TRAINING
 print("Fit model on training data")
 history = model.fit(
     x_train_f,
@@ -231,6 +260,10 @@ history = model.fit(
 loss.append(history.history['loss'])
 val_loss.append(history.history['val_loss'])
 
+The returned `history` object holds a record of the loss values and metric values
+during training:
+
+# plot training curves
 #history.history['loss']
 
 loss_p = np.array(loss)
@@ -251,6 +284,9 @@ plt.xlim(0,len(loss_p))
 plt.ylim(0,max(loss_p))
 plt.legend()
 plt.show()
+
+
+We evaluate the model on the test data via `evaluate()`:
 
 # we start by unfreezing all layers of the base model
 #model.trainable = True
@@ -277,6 +313,8 @@ history = model.fit(
     validation_data=(x_eval_f, y_eval_f),
 )
 
+
+# plot training curves with freezing
 loss_f = np.array(history.history['loss'])
 val_loss_f = np.array(history.history['val_loss'])
 #print(loss_f)
@@ -307,8 +345,9 @@ plt.xlim(0,len(loss_t))
 #plt.ylim(0,0.2)
 plt.legend()
 #plt.show()
-plt.savefig('performance_em.png',facecolor='white', transparent=False)
+plt.savefig('performance_em3.png',facecolor='white', transparent=False)
 
+Now, let's review each piece of this workflow in detail.
 
 outfil = 'performance_em.dat'
 tofile = zip(loss_t,val_loss_t)

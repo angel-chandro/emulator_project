@@ -4,7 +4,16 @@ from tensorflow.keras import layers
 import pandas as pd
 
 
-model = tf.keras.models.load_model('model_saved')
+# charge 9 models
+model1 = tf.keras.models.load_model('model_saved_1')
+model2 = tf.keras.models.load_model('model_saved_2')
+model3 = tf.keras.models.load_model('model_saved_3')
+model4 = tf.keras.models.load_model('model_saved_4')
+model5 = tf.keras.models.load_model('model_saved_5')
+model6 = tf.keras.models.load_model('model_saved_6')
+model7 = tf.keras.models.load_model('model_saved_7')
+model8 = tf.keras.models.load_model('model_saved_8')
+model9 = tf.keras.models.load_model('model_saved_9')
 
 
 import numpy as np 
@@ -107,158 +116,6 @@ y_train_f = y_train.astype("float32")
 y_eval_f = y_eval.astype("float32")
 y_test_f = y_test.astype("float32")
 
-# Evaluate the model on the test data using `evaluate`
-print("Evaluate on test data")
-results = model.evaluate(x_test_f, y_test_f, batch_size=1)
-print("test loss, test acc:", results)
-
-# Generate predictions (probabilities -- the output of the last layer)
-# on new data using `predict`
-print("Generate predictions for samples")
-predictions = model.predict(x_test_f)#print(predictions)
-print("predictions shape:", predictions.shape)
-
-# check that the test MAE is simply the mean
-mae_a = []
-maeObject = keras.losses.MeanAbsoluteError()
-for i in range(n_test):
-    maeTensor = maeObject(y_test_f[i,:], predictions[i])
-    mae = maeTensor.numpy()
-    print(mae)
-    mae_a.append(mae)
-mae_a = np.array(mae_a)    
-
-print(model.metrics_names)
-
-
-from matplotlib.pyplot import cm
-
-def check_test(ind,n_train,galf,pred,xlab,ylab,xlim,ylim,file,comm):
-    # compare the predictions of the test and the real values visibly
-    # the closer to the y=x curve, the more accurate the emulator performance is
-    fig = plt.figure(ind,figsize=(9.6,7.2))
-    for i,c in zip(range(n_test),color):
-        plt.plot(galf[i,:],pred[i,:],'.',c=c,markersize=10)
-    plt.plot(np.linspace(xlim[0],xlim[1],100),np.linspace(ylim[0],ylim[1],100),'-k')
-    plt.xlabel(xlab)
-    plt.ylabel(ylab)
-    plt.show()
-    
-    #galf = galf.flatten()
-    #pred = pred.flatten()
-    # ratio
-    #tofile = zip(galf,pred/galf)
-    #with open(file, 'w') as outf: # written mode (not appended)
-    #    outf.write(comm)
-    #    np.savetxt(outf,list(tofile))#,fmt=('%.5f'))
-    #    outf.closed 
-    return
-
-acum = 0
-for i in range(len(plots)):
-    
-    if plots[i]=='KLF_z0':
-        check_test(0,n_train,output_test[acum:acum+len_b[0]],predictions[acum:acum+len_b[0]])
-        acum += len_b[0]
-    elif plots[i]=='rLF_z0':
-        check_test(1,n_train,output_test[acum:acum+len_b[1]],predictions[acum:acum+len_b[1]])
-        acum += len_b[1]
-    elif plots[i]=='early-t_z0':
-        check_test(2,n_train,output_test[acum:acum+len_b[2]],predictions[acum:acum+len_b[2]])
-        acum += len_b[2]
-    elif plots[i]=='late-t_z0':
-        check_test(3,n_train,output_test[acum:acum+len_b[3]],predictions[acum:acum+len_b[3]])
-        acum += len_b[3]
-    elif plots[i]=='HIMF_z0':
-        check_test(4,n_train,output_test[acum:acum+len_b[4]],predictions[acum:acum+len_b[4]])
-        acum += len_b[4]
-    elif plots[i]=='early-f_z0':
-        check_test(5,n_train,output_test[acum:acum+len_b[5]],predictions[acum:acum+len_b[5]])
-        acum += len_b[5]
-    elif plots[i]=='TF_z0':
-        check_test(6,n_train,output_test[acum:acum+len_b[6]],predictions[acum:acum+len_b[6]])
-        acum += len_b[6]
-    elif plots[i]=='bulge-BH_z0':
-        check_test(7,n_train,output_test[acum:acum+len_b[7]],predictions[acum:acum+len_b[7]])
-        acum += len_b[7]
-    elif plots[i]=='Zstars_z0':
-        check_test(8,n_train,output_test[acum:acum+len_b[8]],predictions[acum:acum+len_b[8]])
-        acum += len_b[8]
-    elif plots[i]=='KLF_z1.1':
-        check_test(9,n_train,output_test[acum:acum+len_b[9]],predictions[acum:acum+len_b[9]])
-        acum += len_b[9]
-    elif plots[i]=='mgasf_z0':
-        check_test(10,n_train,output_test[acum:acum+len_b[10]],predictions[acum:acum+len_b[10]])
-        acum += len_b[10]
-
-plt.close('all')
-
-plt.rcParams.update({'font.size': 22})
-
-def check_test2(ind,n_train,n_test,bins,output,galf,pred,xlab,ylab,xlim,ylim):
-    # compare the training models (real values) with the test models (real values)
-    # to check if both of them span correctly the parameter space
-    fig = plt.figure(ind,figsize=(9.6,7.2))
-    for i in range(n_train):
-        if i==0:
-            plt.plot(bins[:,0],output[:,i],c='lightgrey',ls='-',label='Galform training')  
-        else:
-            plt.plot(bins[:,0],output[:,i],c='lightgrey',ls='-')  
-    for i, c in zip(range(n_test), color):
-        if i==0:
-            plt.plot(bins[:,0],galf[i,:],'-',c=c,linewidth=2.5,label='Galform test')
-            plt.plot(bins[:,0],pred[i,:],':',c=c,linewidth=3,label='Emulator',zorder=200)
-        else:
-            plt.plot(bins[:,0],galf[i,:],'-',c=c,linewidth=2.5)
-            plt.plot(bins[:,0],pred[i,:],':',c=c,linewidth=3)    
-    plt.xlabel(xlab)
-    plt.ylabel(ylab)
-    # Put a legend to the right of the current axis
-    plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-    plt.show()
-
-    return
-
-acum = 0
-for i in range(len(plots)):
-    
-    if plots[i]=='KLF_z0':
-        check_test2(0,n_train,n_test,bins[acum:acum+len_b[0]],output_train[acum:acum+len_b[0]],output_test[acum:acum+len_b[0]],predictions[acum:acum+len_b[0]])
-        acum += len_b[0]
-    elif plots[i]=='rLF_z0':
-        check_test2(1,n_train,n_test,bins[acum:acum+len_b[1]],output_train[acum:acum+len_b[1]],output_test[acum:acum+len_b[1]],predictions[acum:acum+len_b[1]])
-        acum += len_b[1]
-    elif plots[i]=='early-t_z0':
-        check_test2(2,n_train,n_test,bins[acum:acum+len_b[2]],output_train[acum:acum+len_b[2]],output_test[acum:acum+len_b[2]],predictions[acum:acum+len_b[2]])
-        acum += len_b[2]
-    elif plots[i]=='late-t_z0':
-        check_test2(3,n_train,n_test,bins[acum:acum+len_b[3]],output_train[acum:acum+len_b[3]],output_test[acum:acum+len_b[3]],predictions[acum:acum+len_b[3]])
-        acum += len_b[3]
-    elif plots[i]=='HIMF_z0':
-        check_test2(4,n_train,n_test,bins[acum:acum+len_b[4]],output_train[acum:acum+len_b[4]],output_test[acum:acum+len_b[4]],predictions[acum:acum+len_b[4]])
-        acum += len_b[4]
-    elif plots[i]=='early-f_z0':
-        check_test2(5,n_train,n_test,bins[acum:acum+len_b[5]],output_train[acum:acum+len_b[5]],,output_test[acum:acum+len_b[5]],predictions[acum:acum+len_b[5]])
-        acum += len_b[5]
-    elif plots[i]=='TF_z0':
-        check_test2(6,n_train,n_test,bins[acum:acum+len_b[6]],output_train[acum:acum+len_b[6]],output_test[acum:acum+len_b[6]],predictions[acum:acum+len_b[6]])
-        acum += len_b[6]
-    elif plots[i]=='bulge-BH_z0':
-        check_test2(7,n_train,n_test,bins[acum:acum+len_b[7]],output_train[acum:acum+len_b[7]],output_test[acum:acum+len_b[7]],predictions[acum:acum+len_b[7]])
-        acum += len_b[7]
-    elif plots[i]=='Zstars_z0':
-        check_test2(8,n_train,n_test,bins[acum:acum+len_b[8]],output_train[acum:acum+len_b[8]],output_test[acum:acum+len_b[8]],predictions[acum:acum+len_b[8]])
-        acum += len_b[8]
-    elif plots[i]=='KLF_z1.1':
-        check_test2(9,n_train,n_test,bins[acum:acum+len_b[9]],output_train[acum:acum+len_b[9]],output_test[acum:acum+len_b[9]],predictions[acum:acum+len_b[9]])
-        acum += len_b[9]
-    elif plots[i]=='mgasf_z0':
-        check_test2(10,n_train,n_test,bins[acum:acum+len_b[10]],output_train[acum:acum+len_b[10]],output_test[acum:acum+len_b[10]],predictions[acum:acum+len_b[10]])
-        acum += len_b[10]
-
-plt.close('all')
-
-
 # 10000 points over a latin hypercube to sample the parameter space (to use emulator)
 lhd = np.loadtxt('hypercube_10p_10000.dat')
 
@@ -286,7 +143,18 @@ x_post = [lhd[:,0],lhd[:,1],lhd[:,2],lhd[:,3],lhd[:,4],lhd[:,5],lhd[:,6],lhd[:,7
 print(np.shape(x_post))
 x_post = np.transpose(x_post)
 z = x_post.astype("float32")
-pre = model.predict(z)
+
+# 9 models and a straight average
+pre1 = model1.predict(z)
+pre2 = model2.predict(z)
+pre3 = model3.predict(z)
+pre4 = model4.predict(z)
+pre5 = model5.predict(z)
+pre6 = model6.predict(z)
+pre7 = model7.predict(z)
+pre8 = model8.predict(z)
+pre9 = model9.predict(z)
+pre = (pre1+pre2+pre3+pre4+pre5+pre6+pre7+pre8+pre9)/9
 
 def chi_square(x_obs,y_obs,eh_obs,el_obs,bins,pred,npred,xlab,ylab):
     

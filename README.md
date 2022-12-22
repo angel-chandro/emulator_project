@@ -1,5 +1,5 @@
 
-For the fnl_sam simulations I have been running the Dhalos code in the path /home/chandro/dhalo-trees_rhalf+snap_nfids_mod (it is exactly the same as the one in /home/chandro/dhalo-trees_rhalf+snap_nfids_nftab, but I have been using it for different tests). The different parameter files are stored in the directory /home/chandro/dhalo-trees_rhalf+snap_nfids_mod/Parameters/fnl_sam. The output data has been stored for the moment in the directory /home/chandro/fnl_sam.
+For the fnl_sam simulations I have been running the Dhalos code in the path /home/chandro/dhalo-trees_rhalf+snap_nfids_mod (it is exactly the same as the one in /home/chandro/dhalo-trees_rhalf+snap_nfids_nftab, but I have been using it for different tests). The different parameter files are stored in the directory /home/chandro/dhalo-trees_rhalf+snap_nfids_mod/Parameters/fnl_sam. The Dhalos output data has been stored for the moment in the directory /home/chandro/fnl_sam. While the Galform output data has been placed in /home/chandro/Galform_Out/simulations/fnl_sam/test.
 
 PROBLEMS:
 - the dispersion code is given wrong results due to the fact that the type 2 galaxies are defined with positions=-1 and velocities=-2 even when the Vimal's merging scheme is employed.
@@ -43,7 +43,7 @@ The same steps would be done in case the SHARK semi-analytic model was employed.
 4. GENERATE CALIBRATION PLOTS DATA
 
 Once the training models have been run, you have to generate the arrays (bins + observable functions values) for the 1000 runs. I have to extend the "calibration.py" code to be used over the 1000 models and save all the generated data.
-- #calibration_em.py: save the bins and the values of the observable functions (data to be used by the emulator) for the 1000 models.
+- calibration_em.py: save the bins and the values of the observable functions (data to be used by the emulator) for the 1000 models.
 
 ---------------------------------------------------------------------------------------------------
 
@@ -53,13 +53,12 @@ Once the training models have been run, you have to generate the arrays (bins + 
 I have finally installed Tensorflow in Taurus with the command: "pip3 install tensorflow --user" (with anaconda activated).
 If you obtain some error messages related to non-updated libraries, run "pip3 install --user --upgrade matplotlib".
 
-- #hypercube_shuffle.py: once the SAM has been run over the 1000 models in case the sampling of the training, evaluation or test set doesn't seem to be adequate visually, shuffle the free parameters and the output from the observables. IN CASE K-FOLD IS NOT IMPLEMENTED.
+- #hypercube_shuffle.py (still need to be tested): once the SAM has been run over the 1000 models in case the sampling of the training, evaluation or test set doesn't seem to be adequate visually, shuffle the free parameters and the output from the observables. Although K-FOLD is implemented (the K-FOLD applied only varies the training and the validation sets with a fixed test set), the shuffle has to be taken into account.
 
 TensorFlow codes in Jupiter notebook.
 
-- #emulator_elliott-SAVE.ipynb: it trains the emulator and it saves it. It separates the 1000 models: 80% training set, 10% evaluation (used to impose the condition that ends the training), 10% test (to study and compare the emulator performance).
+- #emulator_elliott-SAVE.ipynb/.py (still need to be tested): it trains the emulator and it saves it. It separates the 1000 models: 80% training set, 10% evaluation (used to impose the condition that ends the training), 10% test (to study and compare the emulator performance).
 - hypercube_10000models.py: once the emulator is trained, span the whole parameter space through 10000 points in a MLH again make use of the emulator.
-- #emulator_elliott-POST.ipynb: once the emulator trained, it generates the predictions of the observable functions to study the whole parameter space. Compute the chi square compared to the different observational data employed and it finds the set of free parameters most consistent to observations (best fit with the lowest chi square). Run the best fit with the SAM itself and compare both results. Some parts haven't been extrapolated to the current project yet.
-
-- #emulator_elliott-SAVE-kfold.ipynb: k-fold technique applied. Still not implemented.
-
+- #emulator_elliott-POST.ipynb/.py (still in progress): once the emulator trained, it generates the predictions of the observable functions to study the whole parameter space. Compute the chi square compared to the different observational data employed and it finds the set of free parameters most consistent to observations (best fit with the lowest chi square). Run the best fit with the SAM itself and compare both results. Some parts haven't been extrapolated to the current project yet.
+- #emulator_elliott-KFOLD.ipynb/.py (still in progess): k-fold technique applied (only to the training and validation sets, not the test set that is fixed). Generating the emulators.
+- #emulator_elliott-POST-KFOLD.ipynb/.py (still in progess): k-fold technique applied (only to the training and validation sets, not the test set that is fixed). Using the emulators to study the probability distribution
