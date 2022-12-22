@@ -62,3 +62,5 @@ TensorFlow codes in Jupiter notebook.
 - #emulator_elliott-POST.ipynb/.py (still in progress): once the emulator trained, it generates the predictions of the observable functions to study the whole parameter space. Compute the chi square compared to the different observational data employed and it finds the set of free parameters most consistent to observations (best fit with the lowest chi square). Run the best fit with the SAM itself and compare both results. Some parts haven't been extrapolated to the current project yet.
 - #emulator_elliott-KFOLD.ipynb/.py (still in progess): k-fold technique applied (only to the training and validation sets, not the test set that is fixed). Generating the emulators.
 - #emulator_elliott-POST-KFOLD.ipynb/.py (still in progess): k-fold technique applied (only to the training and validation sets, not the test set that is fixed). Using the emulators to study the probability distribution
+
+K-FOLD TECHNIQUE COULD BE IMPLEMENTED INCLUDING ALSO THE TEST DATA (THE SHUFFLING CODE WOULDN'T BE NECESSARY).
